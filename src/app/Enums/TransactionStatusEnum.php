@@ -2,18 +2,9 @@
 
 namespace App\Enums;
 
-class TransactionStatusEnum
+enum TransactionStatusEnum: string
 {
-    public const PENDING = 'pending';
-    public const SUCCESS = 'success';
-    public const DECLINED = 'declined';
-
-    public static function getAllStatuses(): array
-    {
-        return [
-            self::PENDING,
-            self::SUCCESS,
-            self::DECLINED,
-        ];
-    }
+    case PENDING = 'pending';
+    case SUCCESS = 'success';
+    case DECLINED = 'declined';
 }

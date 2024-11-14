@@ -2,15 +2,29 @@
 
 namespace App\Services\Commissions;
 
-use App\Models\Transaction;
+use app\Clients\Transak\TransakClient;
+use App\DTOs\TransactionDTO;
 
 class TransakCommissionProvider implements CommissionProviderInterface
 {
-    public function getCommissionDetails(Transaction $transaction): CommissionDetailsDTO
+    public function __construct(private TransakClient $transakClient)
     {
-        $providerCommission = 5.0;
-        $networkCommission = 2.5;
+    }
 
-        return new CommissionDetailsDTO($providerCommission, $networkCommission);
+    public function getCommissionDetails(TransactionDTO $transactionDTO): CommissionDetailsDTO
+    {
+        $transakQuoteDTO = $this->transakClient->getQuote(
+            fiatCurrency: $transactionDTO->currency->value,
+            cryptoCurrency: 'USDT',
+            isBuyOrSell: 'BUY',
+            network: 'tron',
+            paymentMethod: 'credit_debit_card',
+            fiatAmount: $transactionDTO->amount
+        );
+
+        return new CommissionDetailsDTO(
+            $transakQuoteDTO->getProviderCommission(),
+            $transakQuoteDTO->getNetworkCommission()
+        );
     }
 }

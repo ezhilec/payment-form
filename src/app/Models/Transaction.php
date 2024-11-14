@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\TransactionStatusEnum;
 
 class Transaction extends Model
 {
@@ -20,9 +19,4 @@ class Transaction extends Model
         'transaction_type',
         'status',
     ];
-
-    public static function isValidStatus(string $status): bool
-    {
-        return in_array($status, TransactionStatusEnum::getAllStatuses(), true);
-    }
 }

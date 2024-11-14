@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('fail_redirect_url')->nullable();
             $table->string('type_of_calculation');
             $table->string('transaction_type');
-            $table->string('status')->default(TransactionStatusEnum::PENDING);
+            $table->string('status')->default(TransactionStatusEnum::PENDING->value);
         });
     }
 

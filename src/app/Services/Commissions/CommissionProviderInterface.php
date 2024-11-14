@@ -2,9 +2,9 @@
 
 namespace App\Services\Commissions;
 
-use App\Models\Transaction;
+use App\DTOs\TransactionDTO;
 
 interface CommissionProviderInterface
 {
-    public function getCommissionDetails(Transaction $transaction): CommissionDetailsDTO;
+    public function getCommissionDetails(TransactionDTO $transactionDTO): CommissionDetailsDTO;
 }
