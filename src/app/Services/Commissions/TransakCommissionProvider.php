@@ -2,24 +2,32 @@
 
 namespace App\Services\Commissions;
 
-use app\Clients\Transak\TransakClient;
+use App\Clients\TransakClient;
+use App\DTOs\CommissionDetailsDTO;
 use App\DTOs\TransactionDTO;
+use App\Enums\CryptoCurrencyEnum;
+use App\Enums\CryptoCurrencyNetworkEnum;
+use App\Enums\CurrencyEnum;
 
 class TransakCommissionProvider implements CommissionProviderInterface
 {
-    public function __construct(private TransakClient $transakClient)
+    public function __construct(private readonly TransakClient $transakClient)
     {
     }
 
-    public function getCommissionDetails(TransactionDTO $transactionDTO): CommissionDetailsDTO
-    {
+    public function getCommissionDetails(
+        CurrencyEnum $fiatCurrency,
+        CryptoCurrencyEnum $cryptoCurrency,
+        CryptoCurrencyNetworkEnum $cryptoCurrencyNetwork,
+        float $fiatAmount,
+    ): CommissionDetailsDTO {
         $transakQuoteDTO = $this->transakClient->getQuote(
-            fiatCurrency: $transactionDTO->currency->value,
-            cryptoCurrency: 'USDT',
+            fiatCurrency: $fiatCurrency->value,
+            cryptoCurrency: $cryptoCurrency->value,
             isBuyOrSell: 'BUY',
-            network: 'tron',
+            network: $cryptoCurrencyNetwork->value,
             paymentMethod: 'credit_debit_card',
-            fiatAmount: $transactionDTO->amount
+            fiatAmount: $fiatAmount
         );
 
         return new CommissionDetailsDTO(

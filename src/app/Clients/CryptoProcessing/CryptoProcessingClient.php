@@ -5,15 +5,13 @@ namespace App\Clients\CryptoProcessing;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class CryptoProcessingClient
+class CryptoProcessingClient implements CryptoProcessingClientInterface
 {
-    private Client $httpClient;
     private string $baseUrl;
     private string $accessToken;
 
-    public function __construct()
+    public function __construct(private readonly Client $httpClient)
     {
-        $this->httpClient = new Client();
         $this->baseUrl = 'https://api.xamax.io/v1/transaction/invoice';
         $this->accessToken = env('CRYPTO_PROCESSING_ACCESS_TOKEN');
     }
@@ -45,7 +43,6 @@ class CryptoProcessingClient
 
             $body = json_decode($response->getBody()->getContents(), true);
             return $body;
-
         } catch (RequestException $e) {
             throw new \Exception('Failed to create invoice: ' . $e->getMessage());
         }

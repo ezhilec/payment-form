@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Clients\Transak;
+namespace App\DTOs;
 
 class TransakQuoteDTO
 {

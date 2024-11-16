@@ -17,4 +17,12 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('transactions', ['uses' => 'TransactionController@create']);
+$router->get('test_form', function () {
+    return view('test_form');
+});
+
+$router->post('transactions', [
+    'as' => 'transactions.store',
+    'uses' => 'TransactionController@create'
+]);
+

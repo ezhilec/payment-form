@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
 
 class TransactionDTO
@@ -10,7 +11,7 @@ class TransactionDTO
         public string $transactionId,
         public string $paymentMethod,
         public float $amount,
-        public string $country,
+        public CountryEnum $country,
         public CurrencyEnum $currency,
         public string $typeOfCalculation,
         public string $transactionType,

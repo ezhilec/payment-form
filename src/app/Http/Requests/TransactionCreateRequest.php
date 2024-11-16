@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CountryEnum;
 use App\Enums\CurrencyEnum;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +14,7 @@ class TransactionCreateRequest extends FormRequest
             'transaction_id' => ['required', 'string'],
             'payment_method' => ['required', 'string', 'in:credit_card,debit_card'],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'country' => ['required', 'string', 'size:3'],
+            'country' => ['required', Rule::enum(CountryEnum::class)],
             'currency' => ['required', Rule::enum(CurrencyEnum::class)],
             'description' => ['nullable', 'string', 'max:255'],
             'success_redirect_url' => ['nullable', 'url'],

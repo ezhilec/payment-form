@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Commissions;
+namespace App\DTOs;
 
 class CommissionDetailsDTO
 {

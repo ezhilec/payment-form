@@ -1,20 +1,18 @@
 <?php
 
-namespace app\Clients\Transak;
+namespace app\Clients;
 
-use App\Clients\Transak\TransakQuoteDTO;
+use App\DTOs\TransakQuoteDTO;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
 class TransakClient
 {
-    private Client $httpClient;
     private string $baseUrl;
     private string $partnerApiKey;
 
-    public function __construct()
+    public function __construct(private readonly Client $httpClient)
     {
-        $this->httpClient = new Client();
         $this->baseUrl = 'https://api-stg.transak.com/api/v1/pricing/public/quotes';
         $this->partnerApiKey = env('TRANSAK_PARTNER_API_KEY');
     }
