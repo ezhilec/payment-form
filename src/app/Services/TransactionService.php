@@ -26,4 +26,9 @@ class TransactionService
     {
         return $this->container->make(TransakCommissionProvider::class);
     }
+
+    public function updateTransaction(): Transaction
+    {
+        // todo implement
+    }
 }

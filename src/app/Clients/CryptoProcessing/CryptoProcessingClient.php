@@ -12,7 +12,7 @@ class CryptoProcessingClient implements CryptoProcessingClientInterface
 
     public function __construct(private readonly Client $httpClient)
     {
-        $this->baseUrl = 'https://api.xamax.io/v1/transaction/invoice';
+        $this->baseUrl = 'https://api.xamax.io/v1';
         $this->accessToken = env('CRYPTO_PROCESSING_ACCESS_TOKEN');
     }
 
@@ -24,7 +24,7 @@ class CryptoProcessingClient implements CryptoProcessingClientInterface
         string $currency
     ): array {
         try {
-            $response = $this->httpClient->post($this->baseUrl, [
+            $response = $this->httpClient->post(sprintf('%s/transaction/invoice', $this->baseUrl), [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->accessToken,
                     'Content-Type' => 'application/json',
@@ -45,6 +45,24 @@ class CryptoProcessingClient implements CryptoProcessingClientInterface
             return $body;
         } catch (RequestException $e) {
             throw new \Exception('Failed to create invoice: ' . $e->getMessage());
+        }
+    }
+
+    public function getIncomingTransaction(string $idOrTxHash): array
+    {
+        try {
+            $response = $this->httpClient->get(sprintf('%s/transaction/incoming/%s', $this->baseUrl, $idOrTxHash), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $body = json_decode($response->getBody()->getContents(), true);
+            return $body;
+        } catch (RequestException $e) {
+            throw new \Exception('Failed to get transaction: ' . $e->getMessage());
         }
     }
 }

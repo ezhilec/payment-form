@@ -21,8 +21,17 @@ $router->get('test_form', function () {
     return view('test_form');
 });
 
+$router->get('test_transak_webhook', function () {
+    return view('test_transak_webhook');
+});
+
 $router->post('transactions', [
     'as' => 'transactions.store',
     'uses' => 'TransactionController@create'
+]);
+
+$router->post('transactions', [
+    'as' => 'transak-webhook',
+    'uses' => 'TransakWebhookController@get'
 ]);
 
