@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Clients;
+namespace App\Clients;
 
 use App\DTOs\TransakQuoteDTO;
 use GuzzleHttp\Client;

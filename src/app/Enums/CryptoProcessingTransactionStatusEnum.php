@@ -10,7 +10,7 @@ enum CryptoProcessingTransactionStatusEnum: string
     case APPROVE_REQUIRED = 'transaction_status_approve_required';
     case OTHER = 'other';
 
-    public function isFinal(): string
+    public function isFinal(): bool
     {
         return in_array($this, [
             self::CONFIRMED,
@@ -19,7 +19,7 @@ enum CryptoProcessingTransactionStatusEnum: string
         ]);
     }
 
-    public function isLastRetry(): string
+    public function isLastRetry(): bool
     {
         return $this == self::APPROVE_REQUIRED;
     }

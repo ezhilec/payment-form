@@ -147,9 +147,17 @@
       <path value="$PROJECT_DIR$/src/vendor/clue/ndjson-react" />
       <path value="$PROJECT_DIR$/src/vendor/friendsofphp/php-cs-fixer" />
       <path value="$PROJECT_DIR$/src/vendor/fidry/cpu-core-counter" />
+      <path value="$PROJECT_DIR$/src/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/src/vendor/phpmyadmin/sql-parser" />
+      <path value="$PROJECT_DIR$/src/vendor/nunomaduro/larastan" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
+  <component name="PhpStan">
+    <PhpStan_settings>
+      <PhpStanConfiguration tool_path="$PROJECT_DIR$/src/vendor/bin/phpstan" />
+    </PhpStan_settings>
+  </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>

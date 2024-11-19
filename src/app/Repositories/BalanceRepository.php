@@ -8,12 +8,13 @@ class BalanceRepository
 {
     public function getByCurrency(string $currency): Balance
     {
-        /* @var Balance $balance */
+        /** @var Balance $balance */
         $balance = Balance::query()
-            ->firstOrCreate(
-                ['currency' => $currency],
-                ['value' => 0]
-            );
+            ->where('currency', $currency)
+            ->firstOrCreate([
+                'value' => 0,
+                'currency' => $currency,
+            ]);
 
         return $balance;
     }

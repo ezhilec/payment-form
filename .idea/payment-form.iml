@@ -33,6 +33,9 @@
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/clue/ndjson-react" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/friendsofphp/php-cs-fixer" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/fidry/cpu-core-counter" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpstan/phpstan" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpmyadmin/sql-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/nunomaduro/larastan" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

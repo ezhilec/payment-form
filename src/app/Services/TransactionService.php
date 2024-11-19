@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\Commissions\CommissionProviderInterface;
 use App\Services\Commissions\TransakCommissionProvider;
+use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
 
 class TransactionService
@@ -44,8 +45,8 @@ class TransactionService
             TransactionStatusEnum::DECLINED->value,
             TransactionStatusEnum::NEED_APPROVE->value => $transaction->fail_redirect_url,
             TransactionStatusEnum::SUCCESS->value => $transaction->success_redirect_url,
+            default => throw new InvalidArgumentException('Invalid transaction status: ' . $transaction->status),
         };
-
     }
 
     public function processTransactionStatus(
