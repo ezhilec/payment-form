@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\TransactionDTO;
+use App\Enums\CryptoProcessingTransactionStatusEnum;
 use App\Enums\TransactionStatusEnum;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
@@ -14,7 +15,9 @@ class TransactionService
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository,
-        private readonly Container $container
+        private readonly Container $container,
+        private readonly SendCallbackService $sendCallbackService,
+        private readonly BalanceService $balanceService,
     ) {
     }
 
@@ -30,8 +33,39 @@ class TransactionService
 
     public function updateTransactionStatus(Transaction $transaction, TransactionStatusEnum $status): Transaction
     {
-        $this->transactionRepository->update($transaction, [
+        return $this->transactionRepository->update($transaction, [
             'status' => $status->value
         ]);
+    }
+
+    public function getCallbackUrlByStatus(Transaction $transaction): string
+    {
+        return match ($transaction->status) {
+            TransactionStatusEnum::PENDING->value,
+            TransactionStatusEnum::DECLINED->value,
+            TransactionStatusEnum::NEED_APPROVE->value => $transaction->fail_redirect_url,
+            TransactionStatusEnum::SUCCESS->value => $transaction->success_redirect_url,
+        };
+
+    }
+
+    public function processTransactionStatus(
+        string $transactionId,
+        TransactionStatusEnum $status
+    ): void
+    {
+        $transaction = $this->transactionRepository->getByTransactionId($transactionId);
+
+        $this->updateTransactionStatus($transaction, $status);
+
+        $this->balanceService->increase($transaction->amount, $transaction->currency);
+
+        $redirectUrl = $this->getCallbackUrlByStatus($transaction);
+
+        $this->sendCallbackService->sendTransactionStatusCallback(
+            callbackUrl: $redirectUrl,
+            transactionId: $transaction->transaction_id,
+            status: $status
+        );
     }
 }

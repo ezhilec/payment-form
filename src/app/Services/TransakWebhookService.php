@@ -8,10 +8,6 @@ use Firebase\JWT\Key;
 
 class TransakWebhookService
 {
-    public function __construct()
-    {
-    }
-
     /**
      * @throws \Exception
      */

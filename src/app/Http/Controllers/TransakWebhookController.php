@@ -23,6 +23,6 @@ class TransakWebhookController extends Controller
 
         $this->cryptoProcessingService->dispatchGetIncomingTransactionJob($transakWebhookDTO->getTransactionHash());
 
-        return response()->json([], 200);
+        return response()->json(['status' => 'ok'], 200);
     }
 }
