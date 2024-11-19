@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Queue;
 
 class CryptoProcessingService
 {
-    const DEFAULT_CODE = 'usdt_trc20';
-    const DEFAULT_TYPE = 'invoice_type_default';
+    public const DEFAULT_CODE = 'usdt_trc20';
+    public const DEFAULT_TYPE = 'invoice_type_default';
 
     public function __construct(private readonly CryptoProcessingClientInterface $cryptoProcessingClient)
     {

@@ -2,10 +2,7 @@
 
 namespace App\Repositories;
 
-use App\DTOs\TransactionDTO;
-use App\Enums\CurrencyEnum;
 use App\Models\Balance;
-use App\Models\Transaction;
 
 class BalanceRepository
 {

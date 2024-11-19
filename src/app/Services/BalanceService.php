@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-use App\DTOs\TransaskWebhookDTO;
 use App\Repositories\BalanceRepository;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class BalanceService
 {

@@ -34,4 +34,3 @@ $router->post('transak-webhook', [
     'as' => 'transak-webhook',
     'uses' => 'TransakWebhookController@get'
 ]);
-

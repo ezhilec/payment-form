@@ -4,7 +4,6 @@ namespace App\Services\Commissions;
 
 use App\Clients\TransakClient;
 use App\DTOs\CommissionDetailsDTO;
-use App\DTOs\TransactionDTO;
 use App\Enums\CryptoCurrencyEnum;
 use App\Enums\CryptoCurrencyNetworkEnum;
 use App\Enums\CurrencyEnum;

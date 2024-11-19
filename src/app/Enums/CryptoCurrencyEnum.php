@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
-enum CryptoCurrencyEnum: string {
+enum CryptoCurrencyEnum: string
+{
     case USDT = 'USDT';
 }

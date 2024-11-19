@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\DTOs\TransactionDTO;
-use App\Enums\CryptoProcessingTransactionStatusEnum;
 use App\Enums\TransactionStatusEnum;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
@@ -52,8 +51,7 @@ class TransactionService
     public function processTransactionStatus(
         string $transactionId,
         TransactionStatusEnum $status
-    ): void
-    {
+    ): void {
         $transaction = $this->transactionRepository->getByTransactionId($transactionId);
 
         $this->updateTransactionStatus($transaction, $status);

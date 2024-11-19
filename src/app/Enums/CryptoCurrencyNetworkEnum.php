@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
-enum CryptoCurrencyNetworkEnum: string {
+enum CryptoCurrencyNetworkEnum: string
+{
     case tron = 'tron';
 }

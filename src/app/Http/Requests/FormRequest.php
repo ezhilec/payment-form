@@ -19,7 +19,7 @@ class FormRequest
         $this->prepareForValidation();
 
         if (!$this->authorize()) {
-            throw new UnauthorizedException;
+            throw new UnauthorizedException();
         }
 
         $this->validate($this->req, $this->rules(), $messages, $customAttributes);
