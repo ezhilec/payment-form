@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\TransactionDTO;
+use App\Enums\TransactionStatusEnum;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\Commissions\CommissionProviderInterface;
@@ -27,8 +28,10 @@ class TransactionService
         return $this->container->make(TransakCommissionProvider::class);
     }
 
-    public function updateTransaction(): Transaction
+    public function updateTransactionStatus(Transaction $transaction, TransactionStatusEnum $status): Transaction
     {
-        // todo implement
+        $this->transactionRepository->update($transaction, [
+            'status' => $status->value
+        ]);
     }
 }

@@ -30,7 +30,7 @@ $router->post('transactions', [
     'uses' => 'TransactionController@create'
 ]);
 
-$router->post('transactions', [
+$router->post('transak-webhook', [
     'as' => 'transak-webhook',
     'uses' => 'TransakWebhookController@get'
 ]);

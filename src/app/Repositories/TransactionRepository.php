@@ -23,4 +23,16 @@ class TransactionRepository
             'status' => $transactionDTO->status
         ]);
     }
+
+    public function getByTransactionId(string $transactionId): Transaction
+    {
+        return Transaction::where(['transaction_id' => $transactionId])->firstOrFail();
+    }
+
+    public function update(Transaction $transaction, array $fields): Transaction
+    {
+        $transaction->update($fields);
+
+        return $transaction;
+    }
 }

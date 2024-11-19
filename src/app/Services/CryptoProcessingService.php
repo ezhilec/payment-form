@@ -8,6 +8,7 @@ use App\Enums\CryptoProcessingTransactionStatusEnum;
 use App\Enums\CurrencyEnum;
 use App\Jobs\GetIncomingTransactionJob;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Queue;
 
 class CryptoProcessingService
 {
@@ -40,7 +41,7 @@ class CryptoProcessingService
 
     public function dispatchGetIncomingTransactionJob(string $transactionHash, bool $allowRetry = true, int $delayInSeconds = 0): void
     {
-        dispatch(new GetIncomingTransactionJob($transactionHash, $allowRetry))->delay(Carbon::now()->addSeconds($delayInSeconds));
+        Queue::later(Carbon::now()->addSeconds($delayInSeconds), new GetIncomingTransactionJob($transactionHash, $allowRetry));
     }
 
     public function getIncomingTransaction(string $transactionHash): CryptoProcessingTransactionStatusEnum

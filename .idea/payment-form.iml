@@ -16,6 +16,8 @@
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/guzzlehttp/psr7" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/firebase/php-jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/illuminate/redis" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/predis/predis" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

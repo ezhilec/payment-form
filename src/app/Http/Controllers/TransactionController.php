@@ -12,7 +12,6 @@ use App\Http\Requests\TransactionCreateRequest;
 use App\Services\CryptoProcessingService;
 use App\Services\PaymentFormService;
 use App\Services\TransactionService;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -44,7 +43,7 @@ class TransactionController extends Controller
             failRedirectUrl: $request->get('fail_redirect_url') ?? null,
         );
 
-        $transaction = $this->transactionService->createTransaction($transactionDTO);
+        $this->transactionService->createTransaction($transactionDTO);
 
         $cryptoCurrency = CryptoCurrencyEnum::USDT;
         $cryptoCurrencyNetwork = CryptoCurrencyNetworkEnum::tron;

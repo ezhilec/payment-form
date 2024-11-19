@@ -10,7 +10,7 @@
 <form action="{{ route('transactions.store') }}" method="POST">
 
     <label for="transaction_id">Transaction ID:</label>
-    <input type="text" id="transaction_id" name="transaction_id" value="1" required><br><br>
+    <input type="text" id="transaction_id" name="transaction_id" value="DUMMY_TX_ID" required><br><br>
 
     <label for="payment_method">Payment Method:</label>
     <input type="text" id="payment_method" name="payment_method" value="credit_card" required><br><br>

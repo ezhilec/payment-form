@@ -35,5 +35,23 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  queue-worker:
+    build:
+      context: ./docker/php
+    container_name: queue-worker
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    command: php artisan queue:work --tries=1
+    depends_on:
+      - redis
+      - postgres
+
 volumes:
   pgdata:
