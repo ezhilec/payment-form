@@ -1,1 +1,0 @@
-{"version":1,"defects":{"Tests\\Feature\\Http\\Controllers\\TransactionControllerTest::test_create_transaction_successful":8},"times":{"Tests\\Feature\\Http\\Controllers\\TransactionControllerTest::test_create_transaction_successful":0.243}}
