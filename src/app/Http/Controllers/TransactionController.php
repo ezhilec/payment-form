@@ -26,6 +26,7 @@ class TransactionController extends Controller
 
     /**
      * @throws ValidationException
+     * @throws \Exception
      */
     public function create(TransactionCreateRequest $request): View
     {
@@ -43,38 +44,41 @@ class TransactionController extends Controller
             failRedirectUrl: $request->get('fail_redirect_url') ?? null,
         );
 
-        $this->transactionService->createTransaction($transactionDTO);
-
         $cryptoCurrency = CryptoCurrencyEnum::USDT;
         $cryptoCurrencyNetwork = CryptoCurrencyNetworkEnum::tron;
 
-        $commissionProvider = $this->transactionService->getCommissionProvider();
-        $commissionDetailsDTO = $commissionProvider->getCommissionDetails(
-            fiatCurrency: $transactionDTO->currency,
-            cryptoCurrency: $cryptoCurrency,
-            cryptoCurrencyNetwork: $cryptoCurrencyNetwork,
-            fiatAmount: $transactionDTO->amount,
-        );
+        try {
+            $this->transactionService->createTransaction($transactionDTO);
 
-        $transactionTax = $commissionDetailsDTO->getNetworkCommission() +
-            $commissionDetailsDTO->getProviderCommission();
+            $commissionProvider = $this->transactionService->getCommissionProvider();
+            $commissionDetailsDTO = $commissionProvider->getCommissionDetails(
+                fiatCurrency: $transactionDTO->currency,
+                cryptoCurrency: $cryptoCurrency,
+                cryptoCurrencyNetwork: $cryptoCurrencyNetwork,
+                fiatAmount: $transactionDTO->amount,
+            );
 
-        $cryptoInvoiceAmount = $transactionDTO->amount - $transactionTax;
+            $transactionTax = $commissionDetailsDTO->getNetworkCommission() +
+                $commissionDetailsDTO->getProviderCommission();
+            $cryptoInvoiceAmount = $transactionDTO->amount - $transactionTax;
 
-        $cryptoInvoiceDTO = $this->cryptoProcessingService->createInvoice(
-            txId: $transactionDTO->transactionId,
-            amount: $cryptoInvoiceAmount,
-            currency: $transactionDTO->currency
-        );
+            $cryptoInvoiceDTO = $this->cryptoProcessingService->createInvoice(
+                txId: $transactionDTO->transactionId,
+                amount: $cryptoInvoiceAmount,
+                currency: $transactionDTO->currency
+            );
 
-        $paymentFormUrl = $this->paymentFormService->getLink(
-            fiatCurrency: $transactionDTO->currency,
-            fiatAmount: $transactionDTO->amount,
-            cryptoCurrencyCode: $cryptoCurrency,
-            network: $cryptoCurrencyNetwork,
-            walletAddress: $cryptoInvoiceDTO->getWalletAddress(),
-        );
+            $paymentFormUrl = $this->paymentFormService->getLink(
+                fiatCurrency: $transactionDTO->currency,
+                fiatAmount: $transactionDTO->amount,
+                cryptoCurrencyCode: $cryptoCurrency,
+                network: $cryptoCurrencyNetwork,
+                walletAddress: $cryptoInvoiceDTO->getWalletAddress(),
+            );
 
-        return view('payment', ['url' => $paymentFormUrl]);
+            return view('payment', ['url' => $paymentFormUrl]);
+        } catch (\Throwable $exception) {
+            abort(500, $exception->getMessage());
+        }
     }
 }

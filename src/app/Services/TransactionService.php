@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\DTOs\TransactionDTO;
 use App\Enums\TransactionStatusEnum;
+use App\Exceptions\TransactionCreationException;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\Commissions\CommissionProviderInterface;
 use App\Services\Commissions\TransakCommissionProvider;
-use http\Exception\InvalidArgumentException;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 
 class TransactionService
@@ -21,11 +22,22 @@ class TransactionService
     ) {
     }
 
+    /**
+     * @throws TransactionCreationException
+     */
     public function createTransaction(TransactionDTO $transactionDTO): Transaction
     {
-        return $this->transactionRepository->store($transactionDTO);
+        try {
+            return $this->transactionRepository->store($transactionDTO);
+        } catch (\Throwable $exception) {
+            throw new TransactionCreationException('Failed to create transaction', previous: $exception);
+        }
+
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function getCommissionProvider(): CommissionProviderInterface
     {
         return $this->container->make(TransakCommissionProvider::class);

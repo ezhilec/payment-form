@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\TransaskWebhookDTO;
+use App\Exceptions\TransakWebhookDecodeException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -13,12 +14,16 @@ class TransakWebhookService
      */
     public function decodeData(string $data): TransaskWebhookDTO
     {
-        $key = env('TRANSAK_WEBHOOK_ACCESS_TOKEN');
+        try {
+            $key = env('TRANSAK_WEBHOOK_ACCESS_TOKEN');
 
-        $decodedData = JWT::decode($data, new Key($key, 'HS256'));
+            $decodedData = JWT::decode($data, new Key($key, 'HS256'));
 
-        $decodedArray = (array)$decodedData;
+            $decodedArray = (array)$decodedData;
 
-        return new TransaskWebhookDTO($decodedArray);
+            return new TransaskWebhookDTO($decodedArray);
+        } catch (\Throwable $exception) {
+            throw new TransakWebhookDecodeException('Failed to decode Transak webhook data.', previous: $exception);
+        }
     }
 }

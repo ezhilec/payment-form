@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\TransakWebhookDecodeException;
 use App\Http\Requests\TransakWebhookRequest;
 use App\Services\CryptoProcessingService;
 use App\Services\TransakWebhookService;
@@ -14,14 +15,24 @@ class TransakWebhookController extends Controller
         private readonly CryptoProcessingService $cryptoProcessingService,
     ) {
     }
+
+    /**
+     * @throws \Exception
+     */
     public function get(TransakWebhookRequest $request): JsonResponse
     {
-        $data = $request->get('data');
+        try {
+            $data = $request->get('data');
 
-        $transakWebhookDTO = $this->transakWebhookService->decodeData($data);
+            $transakWebhookDTO = $this->transakWebhookService->decodeData($data);
 
-        $this->cryptoProcessingService->dispatchGetIncomingTransactionJob($transakWebhookDTO->getTransactionHash());
+            $this->cryptoProcessingService->dispatchGetIncomingTransactionJob($transakWebhookDTO->getTransactionHash());
 
-        return response()->json(['status' => 'ok'], 200);
+            return response()->json(['status' => 'ok'], 200);
+        } catch (TransakWebhookDecodeException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 400);
+        } catch (\Throwable $exception) {
+            return response()->json(['error' => 'Unexpected error occurred.'], 500);
+        }
     }
 }

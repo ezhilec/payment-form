@@ -6,6 +6,7 @@ use App\Clients\CryptoProcessing\CryptoProcessingClientInterface;
 use App\DTOs\CryptoInvoiceDTO;
 use App\Enums\CryptoProcessingTransactionStatusEnum;
 use App\Enums\CurrencyEnum;
+use App\Exceptions\InvoiceCreationException;
 use App\Jobs\GetIncomingTransactionJob;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
@@ -19,32 +20,46 @@ class CryptoProcessingService
     {
     }
 
+    /**
+     * @throws InvoiceCreationException
+     */
     public function createInvoice(string $txId, float $amount, CurrencyEnum $currency): CryptoInvoiceDTO
     {
-        $response = $this->cryptoProcessingClient->createInvoice(
-            txId: $txId,
-            code: self::DEFAULT_CODE,
-            type: self::DEFAULT_TYPE,
-            amount: $amount,
-            currency: strtolower($currency->value)
-        );
+        try {
+            $response = $this->cryptoProcessingClient->createInvoice(
+                txId: $txId,
+                code: self::DEFAULT_CODE,
+                type: self::DEFAULT_TYPE,
+                amount: $amount,
+                currency: strtolower($currency->value)
+            );
 
-        $amountRequiredUnit = $response['amountRequiredUnit'] ?? '';
-        $walletAddress = $response['walletAddress'] ?? '';
+            $amountRequiredUnit = $response['amountRequiredUnit'] ?? '';
+            $walletAddress = $response['walletAddress'] ?? '';
 
-        if (empty($amountRequiredUnit) || empty($walletAddress)) {
-            throw new \Exception('Invalid response: Missing required fields.');
+            if (empty($amountRequiredUnit) || empty($walletAddress)) {
+                throw new \Exception('Invalid response: Missing required fields.');
+            }
+
+            return new CryptoInvoiceDTO($amountRequiredUnit, $walletAddress);
+        } catch (\Throwable $exception) {
+            throw new InvoiceCreationException('Failed to create invoice.', previous: $exception);
         }
-
-        return new CryptoInvoiceDTO($amountRequiredUnit, $walletAddress);
     }
 
-    public function dispatchGetIncomingTransactionJob(string $transactionHash, bool $allowRetry = true, int $delayInSeconds = 0): void
-    {
-        Queue::later(Carbon::now()->addSeconds($delayInSeconds), new GetIncomingTransactionJob($transactionHash, $allowRetry));
+    public function dispatchGetIncomingTransactionJob(
+        string $transactionHash,
+        bool $allowRetry = true,
+        int $delayInSeconds = 0,
+        int $currentRetry = 1
+    ): void {
+        Queue::later(
+            Carbon::now()->addSeconds($delayInSeconds),
+            new GetIncomingTransactionJob($transactionHash, $allowRetry, $currentRetry)
+        );
     }
 
-    public function getIncomingTransaction(string $transactionHash): CryptoProcessingTransactionStatusEnum
+    public function getIncomingTransactionStatus(string $transactionHash): CryptoProcessingTransactionStatusEnum
     {
         $transactionData = $this->cryptoProcessingClient->getIncomingTransaction($transactionHash);
 

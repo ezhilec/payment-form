@@ -8,23 +8,30 @@ use App\Services\TransactionService;
 
 class GetIncomingTransactionJob extends Job
 {
-    public function __construct(private readonly string $transactionHash, private readonly bool $allowRetry)
-    {
+    public const MAX_RETRIES = 10;
+
+    public function __construct(
+        private readonly string $transactionHash,
+        private readonly bool $allowRetry,
+        private int $currentRetry = 1,
+    ) {
     }
 
     public function handle(
         CryptoProcessingService $cryptoProcessingService,
         TransactionService $transactionService,
     ) {
-        $status = $cryptoProcessingService->getIncomingTransaction($this->transactionHash);
+        $status = $cryptoProcessingService->getIncomingTransactionStatus($this->transactionHash);
 
-        if ($status->isFinal() || !$this->allowRetry) {
+        if ($this->currentRetry >= self::MAX_RETRIES) {
+            $transactionService->processTransactionStatus($this->transactionHash, TransactionStatusEnum::DECLINED);
+        } elseif ($status->isFinal() || !$this->allowRetry) {
             $transactionStatus = TransactionStatusEnum::fromCryptoProcessingTransactionStatus($status);
             $transactionService->processTransactionStatus($this->transactionHash, $transactionStatus);
         } elseif ($status->isLastRetry()) {
-            $cryptoProcessingService->dispatchGetIncomingTransactionJob($this->transactionHash, false, 5);
+            $cryptoProcessingService->dispatchGetIncomingTransactionJob($this->transactionHash, false, 5, ++$this->currentRetry);
         } else {
-            $cryptoProcessingService->dispatchGetIncomingTransactionJob($this->transactionHash, true, 30);
+            $cryptoProcessingService->dispatchGetIncomingTransactionJob($this->transactionHash, true, 30, ++$this->currentRetry);
         }
     }
 }
